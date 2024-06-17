@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/dbConnect";
-import userModel from "@/model/user";
+import UserModel from "@/model/user";
 import bcrypt from 'bcryptjs';
 import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 
@@ -9,13 +9,13 @@ export async function POST(request: Request) {
     try {
         const { username, email, password } = await request.json();
 
-        const existingUserVerifiedByUsername = await userModel.findOne({ username, isVerified: true });
+        const existingUserVerifiedByUsername = await UserModel.findOne({ username, isVerified: true });
 
         if (existingUserVerifiedByUsername) {
             return Response.json({ success: false, msg: 'Username is already taken' }, { status: 400 });
         }
 
-        const existingUserByEmail = await userModel.findOne({ email });
+        const existingUserByEmail = await UserModel.findOne({ email });
 
         const verificationCode = Math.floor(100000 + Math.random() * 90000).toString();
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
             const expiryDate = new Date();
             expiryDate.setHours(expiryDate.getHours() + 1);
 
-            const newUser = new userModel({
+            const newUser = new UserModel({
                 username,
                 email,
                 password: hashedPassword,
