@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
         if (!result.success) {
             const usernameErrors = result.error.format().username?._errors || [];
-            return Response.json({ success: false, msg: usernameErrors?.length > 0 ? usernameErrors.join(',') : 'Inalid query parameters' }, { status: 400 });
+            return Response.json({ success: false, msg: usernameErrors?.length > 0 ? usernameErrors.join(',') : 'Invalid query parameters' }, { status: 400 });
         }
 
         const { username } = result.data;
