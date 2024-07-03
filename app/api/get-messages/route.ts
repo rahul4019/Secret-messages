@@ -34,8 +34,8 @@ export async function GET(request: Request) {
 
         return Response.json({ success: true, messages: user[0].messages }, { status: 200 });
     } catch (error) {
-        console.log('Error in getting user messages');
-        return Response.json({ success: false, msg: 'Error in getting user messages' }, { status: 500 });
+        console.log('Error adding message', error);
+        return Response.json({ success: false, msg: 'Internal server error' }, { status: 500 });
     }
 
 }
