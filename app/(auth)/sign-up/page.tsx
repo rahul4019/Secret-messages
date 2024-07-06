@@ -59,7 +59,7 @@ const Page = () => {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post<ApiResponse>(`/api/signup`, data);
+      const response = await axios.post<ApiResponse>(`/api/sign-up`, data);
       toast({
         title: 'Success',
         description: response.data.msg
@@ -138,11 +138,26 @@ const Page = () => {
                 </FormItem>
               )}
             />
+            <Button type="submit" className='w-full' disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                'Sign Up'
+              )}
+            </Button>
           </form>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? <> <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait</> : ('Signup')}
-          </Button>
         </Form>
+        <div className="text-center mt-4">
+          <p>
+            Already a member?{' '}
+            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
