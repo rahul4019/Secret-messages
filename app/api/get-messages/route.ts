@@ -19,7 +19,6 @@ export async function GET(request: Request) {
 
     // get user from the session
     const user: User = session.user;
-    console.log('session USER: ', user);
 
     // updating user._id type from string 
     const userId = new mongoose.Types.ObjectId(user._id);
@@ -38,11 +37,7 @@ export async function GET(request: Request) {
             { $sort: { 'messages.createdAt': -1 } }, // Assuming you still want to sort messages
             { $group: { _id: '$_id', messages: { $push: '$messages' } } },
         ]);
-
-
-        console.log('USER: ', user);
-        console.log('USER length: ', user.length);
-
+ 
         if (!user || user.length === 0) {
             return Response.json({ success: false, msg: 'User not found' }, { status: 401 });
         }
