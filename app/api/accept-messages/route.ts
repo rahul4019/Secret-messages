@@ -35,21 +35,22 @@ export async function POST(request: Request) {
 
 }
 
-async function GET(request: Request) {
+export async function GET(request: Request) {
     await dbConnect();
 
     const session = await getServerSession(authOptions);
 
     // get user from the session
     const user: User = session?.user;
-
+    
     if (!session || !session.user) {
-        return Response.json({ success: false, msg: 'Not Authenticated' }, { status: 401 });
+        return Response.json(
+            { success: false, msg: 'Not Authenticated' },
+            { status: 401 }
+        );
     }
 
     const userId = user._id;
-
-
 
     try {
         const foundUser = await UserModel.findById(userId);
@@ -58,7 +59,14 @@ async function GET(request: Request) {
             return Response.json({ success: false, msg: 'User not found' }, { status: 404 });
         }
 
-        return Response.json({ success: true, msg: 'Message acceptance status found', isAcceptingMessages: foundUser.isAcceptingMessages }, { status: 200 });
+        return Response.json(
+            {
+                success: true,
+                msg: 'Message acceptance status found',
+                isAcceptingMessages: foundUser.isAcceptingMessages
+            },
+            { status: 200 }
+        );
     } catch (error) {
         console.log('Error in getting message acceptance status');
         return Response.json({ success: false, msg: 'Error in getting message acceptance status' }, { status: 500 });

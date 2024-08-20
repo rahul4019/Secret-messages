@@ -10,23 +10,38 @@ export async function GET(request: Request) {
 
     const session = await getServerSession(authOptions);
 
-    // get user from the session
-    const user: User = session?.user;
-
     if (!session || !session.user) {
-        return Response.json({ success: false, msg: 'Not Authenticated' }, { status: 401 });
+        return Response.json(
+            { success: false, msg: 'Not Authenticated' },
+            { status: 401 }
+        );
     }
+
+    // get user from the session
+    const user: User = session.user;
+    console.log('session USER: ', user);
 
     // updating user._id type from string 
     const userId = new mongoose.Types.ObjectId(user._id);
 
     try {
+        // const user = await UserModel.aggregate([
+        //     { $match: { _id: userId } },
+        //     { $unwind: '$messages' },
+        //     { $sort: { 'messages.createdAt': -1 } },
+        //     { $group: { _id: '$_id', messages: { $push: '$messages' } } },
+        // ]);
+
         const user = await UserModel.aggregate([
-            { $match: { id: userId } },
-            { $unwind: '$messages' },
-            { $sort: { 'messages.createdAt': -1 } },
-            { $group: { _id: '$_id', messages: { $push: '$messages' } } }
+            { $match: { _id: userId } },
+            { $unwind: { path: '$messages', preserveNullAndEmptyArrays: true } },
+            { $sort: { 'messages.createdAt': -1 } }, // Assuming you still want to sort messages
+            { $group: { _id: '$_id', messages: { $push: '$messages' } } },
         ]);
+
+
+        console.log('USER: ', user);
+        console.log('USER length: ', user.length);
 
         if (!user || user.length === 0) {
             return Response.json({ success: false, msg: 'User not found' }, { status: 401 });
