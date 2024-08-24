@@ -20,13 +20,13 @@ export default function Home() {
   return (
     <>
       {/* Main content */}
-      <main className="flex-grow flex flex-col items-center justify-center px-4 md:px-24 py-12 bg-gray-800 text-white">
+      <main className="flex-grow flex flex-col items-center justify-center px-4 md:px-24 pb-12">
         <section className="text-center mb-8 md:mb-12">
-          <h1 className="text-3xl md:text-5xl font-bold">
-            Dive into the World of Anonymous Feedback
+          <h1 className="text-3xl md:text-6xl font-extrabold">
+            Uncover the World of Secret Messages
           </h1>
-          <p className="mt-3 md:mt-4 text-base md:text-lg">
-            True Feedback - Where your identity remains a secret.
+          <p className="mt-3 md:mt-4 text-base md:text-xl font-semibold text-gray-500">
+            Secret Messages - Your Identity, Your Secret
           </p>
         </section>
 
@@ -58,9 +58,24 @@ export default function Home() {
         </Carousel>
       </main>
 
-      {/* Footer */}
-      <footer className="text-center p-4 md:p-6 bg-gray-900 text-white">
-        © 2023 True Feedback. All rights reserved.
+      {/* footer */}
+      <footer className="bg-muted p-6 md:py-12 w-full">
+        <div className="container max-w-7xl flex flex-col items-center justify-between gap-6 md:flex-row">
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-muted-foreground">&copy; 2024 Secret Messages All rights reserved.</p>
+          </div>
+          <nav className="flex items-center gap-4 sm:gap-6">
+            <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
+              About
+            </Link>
+            <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
+              Contact
+            </Link>
+            <Link href="#" className="text-sm font-medium hover:underline underline-offset-4" prefetch={false}>
+              Privacy
+            </Link>
+          </nav>
+        </div>
       </footer>
     </>
   );
