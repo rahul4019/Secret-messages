@@ -27,12 +27,11 @@ const Navbar = () => {
                     <nav className="gap-4 flex">
                         <Link href='/sign-in' className='flex'>
                             <Button className='w-full md:w-auto'>
-                                <LogIn size={12} className='mr-2' strokeWidth={3} /> Log In
+                                <LogIn size={12} className='mr-2' strokeWidth={3} /> Sign In
                             </Button>
                         </Link>
                     </nav>
                 }
-
             </div>
         </header>
     );
