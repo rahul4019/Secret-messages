@@ -1,28 +1,27 @@
 'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useDebounceCallback } from 'usehooks-ts';
 import { useToast } from "@/components/ui/use-toast";
-import { redirect, useRouter } from "next/navigation";
-import { signUpSchema } from "@/schemas/signUpSchema";
+import { useRouter } from "next/navigation";
 import axios, { AxiosError } from 'axios';
 import { ApiResponse } from "@/types/ApiResponse";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, LockIcon, UserIcon } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 
 const Page = () => {
     const { toast } = useToast();
     const router = useRouter();
+
+    const [isLoading, setIsLoading] = useState(false);
 
     // zod implementation
     const form = useForm<z.infer<typeof signInSchema>>({
@@ -34,6 +33,8 @@ const Page = () => {
     });
 
     const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+        setIsLoading(true);
+
         const result = await signIn('credentials', {
             redirect: false,
             identifier: data.identifier,
@@ -58,6 +59,8 @@ const Page = () => {
             }
         }
 
+        setIsLoading(false);
+
         if (result?.url) {
             router.replace('/dashboard');
         }
@@ -74,44 +77,46 @@ const Page = () => {
                     {/* form */}
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)}>
+                            {/* email/username */}
+                            <FormField
+                                name="identifier"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem className="relative">
+                                        <FormLabel>Email/Username</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="email/username" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* password */}
+                            <FormField
+                                name="password"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Password</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="password" {...field} type="password" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <Button type="submit" className="w-full mt-6" disabled={isLoading}>
+                                {isLoading && <Loader2 className="animate-spin mr-2" strokeWidth={3} size={16} />}
+                                Sign In
+                            </Button>
+                            
                         </form>
-
-                        {/* email/username */}
-                        <FormField
-                            name="identifier"
-                            control={form.control}
-                            render={({ field }) => (
-                                <FormItem className="relative">
-                                    <FormLabel>Email/Username</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="email/username" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* password */}
-                        <FormField
-                            name="password"
-                            control={form.control}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="password" {...field} type="password" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
                     </Form>
                 </CardContent>
                 <CardFooter>
                     <div className="flex flex-col w-full">
-                        <Button type="submit" className="w-full">
-                            Sign In
-                        </Button>
                         <div className="mt-4 text-center text-sm">
                             Already have an account?{" "}
                             <Link href="/sign-up" className="underline" prefetch={false}>
