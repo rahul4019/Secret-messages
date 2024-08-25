@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,11 +11,15 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const VerifyAccount = () => {
     const router = useRouter();
     const params = useParams<{ username: string; }>();
     const { toast } = useToast();
+
+    const [isLoading, setIsLoading] = useState(false);
 
     // zod implementation
     const form = useForm<z.infer<typeof verifySchema>>({
@@ -26,6 +30,7 @@ const VerifyAccount = () => {
     });
 
     const onSubmit = async (data: z.infer<typeof verifySchema>) => {
+        setIsLoading(true);
         try {
             const response = await axios.post(`/api/verify-code`, {
                 username: params.username,
@@ -48,20 +53,22 @@ const VerifyAccount = () => {
                 variant: 'destructive'
             });
         } finally {
-
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-                <div className="text-center">
-                    <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-                        Vefiry Your Account
-                    </h1>
-                    <p className="mb-4">Enter the verification code sent to your email</p>
+        <div className="flex h-screen items-center justify-center bg-background px-2">
+            <Card className="w-full max-w-md">
+                <CardHeader className="space-y-2 text-center">
+                    <CardTitle className="text-2xl font-bold">Vefiry Your Account</CardTitle>
+                    <CardDescription>Enter the verification code sent to your email</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {/* form */}
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <form onSubmit={form.handleSubmit(onSubmit)}>
+
                             <FormField
                                 name="code"
                                 control={form.control}
@@ -75,11 +82,16 @@ const VerifyAccount = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className='w-full'>Submit</Button>
+
+                            <Button type="submit" className="w-full mt-6" disabled={isLoading}>
+                                {isLoading && <Loader2 className="animate-spin mr-2" strokeWidth={3} size={16} />}
+                                Verify
+                            </Button>
+
                         </form>
                     </Form>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
         </div>
     );
 };
