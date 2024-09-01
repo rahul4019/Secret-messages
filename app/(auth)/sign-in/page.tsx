@@ -12,7 +12,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -22,6 +22,7 @@ const Page = () => {
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     // zod implementation
     const form = useForm<z.infer<typeof signInSchema>>({
@@ -41,7 +42,6 @@ const Page = () => {
             password: data.password
         });
 
-        console.log('Next Auth Response: ', result);
 
         if (result?.error) {
             if (result.error === 'CredentialsSignin') {
@@ -91,7 +91,6 @@ const Page = () => {
                                     </FormItem>
                                 )}
                             />
-
                             {/* password */}
                             <FormField
                                 name="password"
@@ -100,7 +99,18 @@ const Page = () => {
                                     <FormItem>
                                         <FormLabel>Password</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="password" {...field} type="password" />
+                                            <div className="flex gap-1">
+                                                <Input placeholder="password" {...field} type={showPassword ? 'text' : 'password'} />
+                                                <Button variant="outline" size="icon" type="button" onClick={() => setShowPassword(!showPassword)}>
+
+                                                    {
+                                                        showPassword ?
+                                                            <Eye className="h-4 w-4" /> :
+                                                            <EyeOff className="h-4 w-4" />
+                                                    }
+
+                                                </Button>
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -111,7 +121,7 @@ const Page = () => {
                                 {isLoading && <Loader2 className="animate-spin mr-2" strokeWidth={3} size={16} />}
                                 Sign In
                             </Button>
-                            
+
                         </form>
                     </Form>
                 </CardContent>

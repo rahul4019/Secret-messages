@@ -27,7 +27,7 @@ const Navbar = () => {
 
                     {session ?
                         <nav className="gap-4 md:flex">
-                            <Link href='/'>
+                            <Link href='/dashboard'>
                                 <Button className='w-full md:w-auto' onClick={() => signOut()}>
                                     <LogOut size={12} className='mr-2' strokeWidth={3} /> Log Out
                                 </Button>
