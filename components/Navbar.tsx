@@ -17,7 +17,7 @@ const Navbar = () => {
                 <Link href="#" className="flex items-center gap-2" prefetch={false}>
                     <span className="text-lg font-bold">Secret messages</span>
                 </Link>
-                <div className='flex gap-8'>
+                <div className='flex gap-4'>
                     <ModeToggle />
                     {session ?
                         <nav className="gap-4 md:flex">
